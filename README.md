@@ -2,6 +2,13 @@
 
 A reusable monochrome Beamer theme for technical lectures and presentations,
 with a light default for classroom projection and an optional dark appearance.
+
+![Y2K Beamer preview: a decorated title slide, section divider, network-layer diagram and Python code slide](assets/preview/theme.png)
+
+Four slides from the Computer Networks demo, rendered with LuaLaTeX using the
+default light appearance and Orbitron headings. Build the
+[editable demo](examples/demo.tex) with `make` to produce `build/demo.pdf`.
+
 Oversized space-age headings, editorial italics, four-point sparkles, thin orbital
 rings and warped vector meshes give the cover and dividers their identity.
 Content slides retain clear margins, readable body text and quiet decoration.
@@ -10,7 +17,7 @@ footer text at least 5.5 mm above the bottom edge. Body text defaults to 10 pt
 with 12 pt line spacing, and frame headings to 20 pt. Cover metadata follows
 the same side margins; full-bleed image layouts intentionally fill the page.
 
-The [20-slide Computer Networks demo](build/demo.pdf) exercises the full system.
+The [20-slide Computer Networks demo](examples/demo.tex) exercises the full system.
 All theme decoration and demo illustrations are original TikZ vectors. The
 three supplied design references informed the visual direction; their images
 are not embedded or redistributed.
