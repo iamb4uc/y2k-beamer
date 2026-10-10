@@ -1,0 +1,267 @@
+\providecommand{\DemoAspect}{169}
+\documentclass[aspectratio=\DemoAspect,10pt]{beamer}
+\usetheme[light,decoration=full]{Y2K}
+\usepackage{booktabs}
+\title[COMPUTER NETWORKS]{COMPUTER\\NETWORKS}
+\subtitle{Packets, protocols \& the paths between us}
+\author{Department of Computer Science}
+\institute{Y2K / FIELD NOTES 01}
+\date{2026}
+\tikzset{netnode/.style={draw=y2kMuted,thick,minimum width=1.8cm,
+  minimum height=.65cm,align=center,font=\small},
+  netlink/.style={-{Stealth[length=2mm]},draw=y2kMuted,thick}}
+\begin{document}
+\begin{frame}[plain]\titlepage\end{frame}
+\begin{frame}{A map of the lecture}
+  \YTwoKColumns[.56]{\tableofcontents}{
+    \YTwoKHeading{Follow one packet}
+    \YTwoKSeparator
+    From a browser on your laptop to a server across the world.
+    \vspace{.4cm}
+    \begin{itemize}
+      \item Identify the role of each layer.
+      \item Read a small network diagram.
+      \item Choose a useful diagnostic.
+    \end{itemize}}
+\end{frame}
+\section{Architecture}
+\YTwoKSection[Different layers. One conversation.]
+\begin{frame}{What makes a network?}
+  \begin{itemize}\setlength{\itemsep}{.45cm}
+    \item \YTwoKHighlight{Hosts} create and consume data: laptops, servers, phones.
+    \item \YTwoKHighlight{Links} carry signals: copper, fibre and radio.
+    \item \YTwoKHighlight{Switches and routers} move frames and packets.
+    \item \YTwoKHighlight{Protocols} define the rules that let systems communicate.
+  \end{itemize}
+  \vspace{.25cm}
+  \YTwoKSeparator
+  {\small\color{y2kMuted}A web request uses all four. No single device does every job.}
+\end{frame}
+\begin{frame}{Packets \& protocols}
+  \begin{YTwoKDefinition}{Packet}
+    A bounded unit of network-layer data: a header for delivery and a payload
+    containing the data carried for the next layer.
+  \end{YTwoKDefinition}
+  \begin{YTwoKExample}{Encapsulation}
+    HTTP data becomes a TCP segment, then an IP packet, then an Ethernet frame.
+    Each layer adds its own information.
+  \end{YTwoKExample}
+  \begin{YTwoKWarning}{A useful distinction}
+    A MAC address identifies a link interface. An IP address supports delivery
+    across networks. They serve different scopes.
+  \end{YTwoKWarning}
+\end{frame}
+\begin{frame}{TCP/IP / four layers}
+  \YTwoKColumns[.53]{
+    \begin{tikzpicture}[x=1cm,y=1cm]
+      \foreach \label/\example/\y in {
+        Application/HTTP + DNS/3,Transport/TCP + UDP/2,
+        Internet/IPv4 + IPv6/1,Link/Ethernet + Wi-Fi/0}{
+        \draw[y2kBorder] (0,\y) rectangle (5,\y+.8);
+        \node[anchor=west,font=\bfseries] at (.2,\y+.4) {\label};
+        \node[anchor=east,font=\scriptsize,text=y2kMuted] at (4.8,\y+.4) {\example};}
+      \draw[netlink] (5.25,3.7)--(5.25,.1);
+    \end{tikzpicture}
+  }{
+    \YTwoKHeading{Encapsulation}
+    \YTwoKSeparator
+    Senders move down the stack. Receivers move up.
+    \vspace{.4cm}
+    \begin{YTwoKCallout}{Think in responsibilities}
+      The Internet layer routes packets. The transport layer connects processes.
+    \end{YTwoKCallout}}
+\end{frame}
+\begin{frame}{OSI / a reference model}
+  \centering
+  \begin{tikzpicture}[x=1cm,y=.54cm]
+    \foreach \num/\label/\example in {
+      7/Application/HTTP,6/Presentation/Encoding,5/Session/Dialog,
+      4/Transport/TCP,3/Network/IP,2/Data link/Ethernet,1/Physical/Signals}{
+      \draw[y2kBorder] (0,\num) rectangle (10,\num+.82);
+      \node[font=\ttfamily,text=y2kMuted] at (.4,\num+.41) {\num};
+      \node[anchor=west,font=\bfseries] at (.9,\num+.41) {\label};
+      \node[anchor=east,font=\small,text=y2kMuted] at (9.7,\num+.41) {\example};}
+  \end{tikzpicture}
+  \par\vspace{.2cm}
+  {\small OSI separates responsibilities; real implementations need not map one-to-one.}
+\end{frame}
+\begin{frame}{A campus star topology}
+  \centering
+  \begin{tikzpicture}
+    \node[netnode] (sw) at (0,0) {Switch};
+    \node[netnode] (a) at (-3,-1.4) {Lab A};
+    \node[netnode] (b) at (0,-1.4) {Lab B};
+    \node[netnode] (c) at (3,-1.4) {Access point};
+    \node[netnode] (r) at (0,1.35) {Router};
+    \node[netnode] (s) at (3,1.35) {Internet};
+    \foreach \n in {a,b,c,r}{\draw[y2kMuted,thick] (sw)--(\n);}
+    \draw[netlink] (r)--(s);
+  \end{tikzpicture}
+  \par\vspace{.3cm}
+  \begin{YTwoKCallout}{Local delivery vs. routed delivery}
+    A switch connects hosts on a link. A router forwards between IP networks.
+  \end{YTwoKCallout}
+\end{frame}
+\section{Follow the packet}
+{\YTwoKSetup{typography=editorial}
+\YTwoKSection[Observe. Measure. Explain.]}
+\begin{frame}{A request through the system}
+  \centering
+  \begin{tikzpicture}[node distance=.7cm]
+    \node[netnode] (app) {Browser};
+    \node[netnode,right=of app] (os) {OS socket};
+    \node[netnode,right=of os] (nic) {NIC};
+    \node[netnode,right=of nic] (net) {Network};
+    \draw[netlink] (app)--(os);
+    \draw[netlink] (os)--(nic);
+    \draw[netlink] (nic)--(net);
+    \node[draw=y2kBorder,align=center,font=\small,below=1cm of os] (q) {Transmit queue\\Buffer before the link};
+    \draw[y2kBorder,dashed] (os)--(q);
+  \end{tikzpicture}
+  \par\vspace{.4cm}
+  \YTwoKSeparator
+  {\small The application writes bytes. The OS and interface turn them into traffic.}
+\end{frame}
+\begin{frame}[fragile]{Terminal / first observations}
+  \begin{YTwoKCode}[language=bash,numbers=none]
+# Linux: inspect interface addresses and routes
+ip -brief address
+ip route
+
+# DNS lookup; reachability is a separate question
+dig example.org
+ping -c 3 192.0.2.1
+  \end{YTwoKCode}
+  \vspace{.2cm}
+  {\small\color{y2kMuted}192.0.2.1 is a documentation address. Substitute your gateway.
+  ICMP replies may be filtered; silence alone does not prove a host is down.}
+\end{frame}
+\begin{frame}[fragile]{Python / resolve a name}
+  \begin{YTwoKCode}[language=Python]
+import socket
+
+try:
+    results = socket.getaddrinfo(
+        "example.org", 443, type=socket.SOCK_STREAM
+    )
+    addresses = sorted({r[4][0] for r in results})
+    print("\n".join(addresses))
+except socket.gaierror as error:
+    print(f"DNS lookup failed: {error}")
+  \end{YTwoKCode}
+  \vspace{.2cm}
+  {\small Resolution discovers addresses; it does not open a connection.}
+\end{frame}
+\begin{frame}{TCP / UDP}
+  \YTwoKComparison{TCP}{
+    \begin{itemize}\setlength{\itemsep}{.25cm}
+      \item Ordered byte stream
+      \item Retransmission and flow control
+      \item Congestion control
+      \item Web traffic, SSH, file transfer
+    \end{itemize}
+  }{UDP}{
+    \begin{itemize}\setlength{\itemsep}{.25cm}
+      \item Datagram boundaries preserved
+      \item No built-in delivery guarantee
+      \item Application chooses recovery
+      \item DNS, media, QUIC transport
+    \end{itemize}}
+  \vspace{.3cm}
+  {\small\color{y2kMuted}QUIC adds reliability and congestion control over UDP.}
+\end{frame}
+{\YTwoKBackgroundOff
+\begin{frame}{Delay / follow the units}
+  \YTwoKColumns[.58]{
+    \[
+      d_{\mathrm{total}} =
+      d_{\mathrm{proc}} + d_{\mathrm{queue}} +
+      \frac{L}{R} + \frac{D}{v}
+    \]
+    \begin{tabular}{@{}ll@{}}\toprule
+      Symbol & Meaning\\\midrule
+      $L$ & Packet length (bits)\\
+      $R$ & Link rate (bits/s)\\
+      $D$ & Link distance (m)\\
+      $v$ & Propagation speed (m/s)\\\bottomrule
+    \end{tabular}
+  }{
+    \YTwoKHeading{One link}
+    \YTwoKSeparator
+    $L=12\,000$ bits, $R=100$ Mbit/s:
+    \[
+      d_{\mathrm{trans}}=0.12\ \mathrm{ms}
+    \]
+    A faster link reduces transmission delay. It does not remove propagation delay.}
+\end{frame}}
+\begin{frame}{The physical network}
+  \YTwoKColumns[.56]{
+    \YTwoKImage[01 / Switching fabric]{rack.pdf}{\linewidth}{2.3cm}
+    \vspace{.1cm}
+    \YTwoKImage[02 / Optical paths]{fiber.pdf}{\linewidth}{1.5cm}
+  }{
+    \YTwoKHeading{Bits need a medium}
+    \YTwoKSeparator
+    Copper carries electrical signals. Fibre carries light. Radio carries
+    electromagnetic waves through space.
+    \vspace{.35cm}
+    {\small\color{y2kMuted}Original vector illustrations; the same frame supports PNG, JPEG and PDF images.}}
+\end{frame}
+\YTwoKFullBleed[OPTICAL PATHS / A link carries a signal. A protocol gives it meaning.]{fiber.pdf}
+\begin{frame}{A diagnostic decision}
+  \YTwoKColumns[.62][c]{
+    \centering
+    \begin{tikzpicture}[node distance=.55cm,font=\small]
+      \node[netnode] (start) {Cannot load a site};
+      \node[diamond,draw=y2kMuted,aspect=3,below=of start,inner sep=2pt] (dns) {Name resolves?};
+      \node[netnode,below left=.6cm and .1cm of dns] (no) {Inspect DNS};
+      \node[netnode,below right=.6cm and .1cm of dns] (yes) {Test connection};
+      \draw[netlink] (start)--(dns);
+      \draw[netlink] (dns)--node[above left]{no}(no);
+      \draw[netlink] (dns)--node[above right]{yes}(yes);
+    \end{tikzpicture}
+  }{
+    \YTwoKQuestion{01}{Which layer routes a packet?}
+    \begin{YTwoKOptions}
+      \item Application
+      \item Transport
+      \item Internet
+      \item Link
+    \end{YTwoKOptions}
+    {\scriptsize\color{y2kMuted}Answer: C. IP forwarding belongs to the Internet layer.}}
+\end{frame}
+\YTwoKConclusion{Connect the ideas.}{Layers divide responsibility. Packets carry context.\\Diagnostics test one claim at a time.}
+\begin{frame}{References / keep exploring}
+  \begin{thebibliography}{9}
+    \bibitem{rfc1122} R. Braden (ed.).
+      \newblock Requirements for Internet Hosts -- Communication Layers.
+      \newblock \href{https://www.rfc-editor.org/rfc/rfc1122}{RFC 1122}, 1989.
+    \bibitem{rfc9293} W. Eddy (ed.).
+      \newblock Transmission Control Protocol (TCP).
+      \newblock \href{https://www.rfc-editor.org/rfc/rfc9293}{RFC 9293}, 2022.
+    \bibitem{rfc768} J. Postel.
+      \newblock User Datagram Protocol.
+      \newblock \href{https://www.rfc-editor.org/rfc/rfc768}{RFC 768}, 1980.
+  \end{thebibliography}
+  \YTwoKSeparator
+  {\small Read a standard with a packet trace beside it. Match each field to its job.}
+\end{frame}
+{\YTwoKSetup{typography=editorial}
+\begin{frame}{The lab team}
+  \vspace{.25cm}
+  \centering
+  \YTwoKProfile{portrait-a.pdf}{Alex}{Routing \& topology}
+  \hspace{1cm}
+  \YTwoKProfile{portrait-b.pdf}{Sam}{Systems \& diagnostics}
+  \hspace{1cm}
+  \YTwoKProfile{portrait-c.pdf}{Robin}{Protocols \& analysis}
+  \par\vspace{.45cm}
+  \YTwoKSeparator
+  {\small\color{y2kMuted}Illustrated demo identities. Replace with your team's own portraits.}
+  \par\vspace{.15cm}
+  \begin{tikzpicture}[scale=.5]
+    \YTwoKOrbit[draw=y2kMuted]{(0,0)}
+    \YTwoKStar[fill=y2kFg,scale=.2]{(1,.2)}
+  \end{tikzpicture}
+\end{frame}}
+\end{document}

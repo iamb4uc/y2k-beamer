@@ -1,0 +1,59 @@
+\providecommand{\TestAspect}{169}
+\documentclass[aspectratio=\TestAspect]{beamer}
+\usetheme{Y2K}
+\providecommand{\TestOptions}{appearance=dark,decoration=full}
+\expandafter\YTwoKSetup\expandafter{\TestOptions}
+\title{Theme interfaces}\author{Y2K test fixture}\date{2026}
+\begin{document}
+\begin{frame}[plain]\titlepage\end{frame}
+\section{Native Beamer}
+\YTwoKSection[Theme smoke test]
+\begin{frame}{Overlays, maths, tables}
+  \begin{itemize}
+    \item<1-> First overlay
+    \item<2-> Second overlay
+  \end{itemize}
+  \[E=mc^2\qquad \sum_{i=1}^{n}i=\frac{n(n+1)}{2}\]
+  \begin{tabular}{ll}Protocol&Port\\DNS&53\\HTTPS&443\end{tabular}
+  \par\href{https://www.rfc-editor.org}{RFC Editor}
+  \begin{block}{Native block}Standard Beamer content.\end{block}
+\end{frame}
+\begin{frame}{Semantic blocks}
+  \begin{YTwoKDefinition}{Host}An endpoint.\end{YTwoKDefinition}
+  \begin{YTwoKExample}{A server}Receives requests.\end{YTwoKExample}
+  \begin{YTwoKWarning}{Scope}Do not confuse links with networks.\end{YTwoKWarning}
+  \begin{YTwoKCallout}{Remember}\YTwoKHighlight{Layers have responsibilities.}\end{YTwoKCallout}
+\end{frame}
+\begin{frame}[fragile]{Language support}
+  \begin{YTwoKCode}[language=C]
+int main(void) { return 0; }
+  \end{YTwoKCode}
+  \YTwoKInputCode[language=SQL]{query.sql}
+  \begin{YTwoKCode}[language=Y2KConfig]
+# Configuration example
+forwarding = true
+  \end{YTwoKCode}
+\end{frame}
+\begin{frame}{Images and profiles}
+  \YTwoKColumns[.6][c]{\YTwoKImage[Wide source cropped square]{fiber.pdf}{3cm}{3cm}}{
+    \YTwoKProfile[2cm]{rack.pdf}{Wide portrait}{Crop keeps proportions}}
+\end{frame}
+\begin{frame}{Native vector components}
+  \centering
+  \begin{tikzpicture}[scale=.8]
+    \YTwoKStar[fill=y2kFg,scale=.4]{(0,0)}
+    \YTwoKOrbit[draw=y2kFg]{(2,0)}
+    \YTwoKMesh[draw=y2kFg]{(4,-.5)}
+    \YTwoKHalftone[fill=y2kFg]{(6,-.5)}
+    \YTwoKCorner[draw=y2kFg]{(8,-.5)}
+  \end{tikzpicture}
+  \YTwoKSeparator\YTwoKHeading{Every primitive is a vector}
+\end{frame}
+{\YTwoKBackgroundOff
+\begin{frame}{A quiet question}
+  \YTwoKQuestion{02}{Where does IP operate?}
+  \begin{YTwoKOptions}\item Internet\item Application\end{YTwoKOptions}
+\end{frame}}
+\YTwoKFullBleed[Cover crop, with caption]{rack.pdf}
+\YTwoKConclusion{Done.}{All core interfaces exercised.}
+\end{document}
