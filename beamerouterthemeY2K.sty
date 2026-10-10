@@ -1,0 +1,33 @@
+\ProvidesPackage{beamerouterthemeY2K}[2026/10/09 Y2K page furniture]
+\setbeamersize{text margin left=.075\paperwidth,text margin right=.075\paperwidth}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{\vbox to .6cm{\vfil}}
+\setbeamertemplate{background}{\ifytwok@background\ytwok@canvas{0}\fi}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\textwidth,sep=0pt]{frametitle}
+    \usebeamerfont{frametitle}\strut\insertframetitle\par
+    \ifx\insertframesubtitle\@empty\else
+      {\sffamily\small\color{y2kMuted}\insertframesubtitle\par}\fi
+    \vskip.16cm
+  \end{beamercolorbox}\vskip.14cm}
+\newcommand{\YTwoKProgress}{%
+  \begin{tikzpicture}[x=\paperwidth,y=1pt]
+    \path[use as bounding box] (0,0) rectangle (1,1);
+    \fill[y2kBorder] (0,0) rectangle (1,.4);
+    \pgfmathsetmacro{\p}{min(1,\insertframenumber/max(1,\inserttotalframenumber))}
+    \fill[y2kFg] (0,0) rectangle (\p,.8);
+  \end{tikzpicture}}
+\setbeamertemplate{footline}{%
+  \ifytwok@footer
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.25cm,dp=.55cm,leftskip=.075\paperwidth,rightskip=.075\paperwidth]{footline}
+      \usebeamerfont{footline}\insertshorttitle\hfill
+      \ifytwok@numbers\insertframenumber\,/\,\inserttotalframenumber\fi
+    \end{beamercolorbox}%
+  \else
+    \ifytwok@numbers
+      \begin{beamercolorbox}[wd=\paperwidth,ht=.25cm,dp=.55cm,rightskip=.075\paperwidth]{footline}
+        \usebeamerfont{footline}\hfill\insertframenumber\,/\,\inserttotalframenumber
+      \end{beamercolorbox}
+    \else\vspace*{.8cm}\fi
+  \fi}

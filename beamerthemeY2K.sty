@@ -1,0 +1,47 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeY2K}[2026/10/09 v1.0 Monochrome orbital Beamer theme]
+\RequirePackage{tikz}
+\RequirePackage{iftex}
+\RequirePackage{listings}
+\usetikzlibrary{calc,arrows.meta,positioning,shapes.geometric}
+\newif\ifytwok@light \ytwok@lighttrue
+\newif\ifytwok@footer \ytwok@footertrue
+\newif\ifytwok@numbers \ytwok@numberstrue
+\newif\ifytwok@grain \ytwok@graintrue
+\newif\ifytwok@background \ytwok@backgroundtrue
+\def\ytwok@intensity{1}
+\def\ytwok@typography{space}
+\def\ytwok@accent{FFFFFF}
+\pgfkeys{/y2k/.is family,/y2k,
+  appearance/.is choice, appearance/dark/.code=\ytwok@lightfalse,
+  appearance/light/.code=\ytwok@lighttrue,
+  decoration/.is choice, decoration/none/.code=\def\ytwok@intensity{0},
+  decoration/subtle/.code=\def\ytwok@intensity{1},
+  decoration/full/.code=\def\ytwok@intensity{2},
+  typography/.is choice, typography/space/.code=\def\ytwok@typography{space},
+  typography/editorial/.code=\def\ytwok@typography{editorial},
+  footer/.is choice, footer/true/.code=\ytwok@footertrue,
+  footer/false/.code=\ytwok@footerfalse,
+  numbering/.is choice, numbering/true/.code=\ytwok@numberstrue,
+  numbering/false/.code=\ytwok@numbersfalse,
+  grain/.is choice, grain/true/.code=\ytwok@graintrue,
+  grain/false/.code=\ytwok@grainfalse,
+  accent/.store in=\ytwok@accent}
+\DeclareOptionBeamer{dark}{\pgfkeys{/y2k/appearance=dark}}
+\DeclareOptionBeamer{light}{\pgfkeys{/y2k/appearance=light}}
+\DeclareOptionBeamer{decoration}{\pgfkeys{/y2k/decoration=#1}}
+\DeclareOptionBeamer{typography}{\pgfkeys{/y2k/typography=#1}}
+\DeclareOptionBeamer{footer}{\pgfkeys{/y2k/footer=#1}}
+\DeclareOptionBeamer{numbering}{\pgfkeys{/y2k/numbering=#1}}
+\DeclareOptionBeamer{grain}{\pgfkeys{/y2k/grain=#1}}
+\DeclareOptionBeamer{accent}{\pgfkeys{/y2k/accent=#1}}
+\ProcessOptionsBeamer
+\usecolortheme{Y2K}
+\usefonttheme{Y2K}
+\RequirePackage{y2kgraphics}
+\useinnertheme{Y2K}
+\useoutertheme{Y2K}
+\newcommand{\YTwoKSetup}[1]{\pgfkeys{/y2k,#1}\ytwok@colors}
+\newcommand{\YTwoKBackgroundOff}{\ytwok@backgroundfalse}
+\newcommand{\YTwoKBackgroundOn}{\ytwok@backgroundtrue}
+\mode<all>

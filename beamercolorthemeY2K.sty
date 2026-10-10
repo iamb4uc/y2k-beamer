@@ -1,0 +1,41 @@
+\ProvidesPackage{beamercolorthemeY2K}[2026/10/09 Y2K colors]
+\definecolor{y2kCharcoal}{HTML}{141414}
+\definecolor{y2kSecondary}{HTML}{252525}
+\definecolor{y2kSilver}{HTML}{BFBFBF}
+\definecolor{y2kBorder}{HTML}{666666}
+\definecolor{y2kCode}{HTML}{141414}
+\definecolor{y2kCodeText}{HTML}{FFFFFF}
+\definecolor{y2kKeyword}{HTML}{C5DDF5}
+\definecolor{y2kString}{HTML}{E8D8B8}
+\definecolor{y2kComment}{HTML}{BFBFBF}
+\newcommand{\ytwok@colors}{%
+  \ifytwok@light
+    \colorlet{y2kBg}{white}\colorlet{y2kFg}{y2kCharcoal}
+    \colorlet{y2kPanel}{black!5}\colorlet{y2kMuted}{black!65}
+  \else
+    \colorlet{y2kBg}{y2kCharcoal}\colorlet{y2kFg}{white}
+    \colorlet{y2kPanel}{y2kSecondary}\colorlet{y2kMuted}{y2kSilver}
+  \fi
+  \def\ytwok@white{FFFFFF}% Default accent follows the selected appearance.
+  \ifx\ytwok@accent\ytwok@white\colorlet{y2kAccent}{y2kFg}
+  \else\definecolor{y2kAccent}{HTML}{\ytwok@accent}\fi
+  \setbeamercolor{normal text}{fg=y2kFg,bg=y2kBg}
+  \setbeamercolor{structure}{fg=y2kFg}
+  \setbeamercolor{alerted text}{fg=y2kAccent}
+  \setbeamercolor{frametitle}{fg=y2kFg,bg=y2kBg}
+  \setbeamercolor{title}{fg=y2kFg}
+  \setbeamercolor{footline}{fg=y2kMuted,bg=y2kBg}
+  \setbeamercolor{y2k code block}{fg=y2kCodeText,bg=y2kCode}
+  \setbeamercolor{block title}{fg=y2kFg,bg=y2kBg}
+  \setbeamercolor{block body}{fg=y2kFg,bg=y2kBg}
+  \setbeamercolor{block title example}{fg=y2kFg,bg=y2kBg}
+  \setbeamercolor{block body example}{fg=y2kFg,bg=y2kBg}
+  \setbeamercolor{block title alerted}{fg=y2kAccent,bg=y2kBg}
+  \setbeamercolor{block body alerted}{fg=y2kFg,bg=y2kBg}
+  \setbeamercolor{bibliography entry author}{fg=y2kFg}
+  \setbeamercolor{bibliography entry title}{fg=y2kFg}
+  \setbeamercolor{bibliography entry location}{fg=y2kMuted}
+  \setbeamercolor{bibliography entry note}{fg=y2kMuted}
+  \hypersetup{urlcolor=y2kFg,linkcolor=y2kFg,citecolor=y2kFg}}
+\hypersetup{colorlinks=true}
+\ytwok@colors

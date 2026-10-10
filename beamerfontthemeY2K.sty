@@ -1,0 +1,36 @@
+\ProvidesPackage{beamerfontthemeY2K}[2026/10/09 Y2K typography]
+\ifLuaTeX
+  \RequirePackage{fontspec}
+  \setsansfont{texgyreadventor}[Extension=.otf,UprightFont=*-regular,
+    BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+  \setmonofont{IBMPlexMono}[Extension=.otf,UprightFont=*-Regular,
+    BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]
+  \IfFileExists{Orbitron-Bold.otf}{%
+    \directlua{local p=kpse.find_file("Orbitron-Bold.otf","tex")
+      local d=p:match("^(.*)/") or "."
+      tex.sprint([[\string\def\string\ytwokOrbitronDirectory{]]..d..[[/}]])}%
+    \newfontfamily\ytwokSpace{Orbitron-Bold.otf}[
+      Path=\ytwokOrbitronDirectory,Renderer=HarfBuzz]%
+  }{\newfontfamily\ytwokSpace{texgyreadventor-bold.otf}}
+  \newfontfamily\ytwokEditorial{texgyrebonum-bolditalic.otf}
+\else
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage{plex-mono}
+  \RequirePackage{tgadventor}
+  \RequirePackage{tgbonum}
+  \renewcommand{\sfdefault}{qag}
+  \newcommand{\ytwokSpace}{\fontfamily{qag}\fontseries{b}\selectfont}
+  \newcommand{\ytwokEditorial}{\fontfamily{qbk}\fontseries{b}\fontshape{it}\selectfont}
+\fi
+\renewcommand{\familydefault}{\sfdefault}
+\setbeamerfont{normal text}{size*={10}{12}}
+\AtBeginDocument{\usebeamerfont{normal text}}
+\newcommand{\YTwoKDisplayFont}{%
+  \def\ytwok@editorial{editorial}%
+  \ifx\ytwok@typography\ytwok@editorial\ytwokEditorial\else\ytwokSpace\fi}
+\setbeamerfont{title}{family=\YTwoKDisplayFont,size=\Huge}
+\setbeamerfont{frametitle}{family=\YTwoKDisplayFont,size*={20}{24}}
+\setbeamerfont{subtitle}{family=\sffamily,size=\large}
+\setbeamerfont{block title}{family=\sffamily,series=\bfseries,size*={10}{12}}
+\setbeamerfont{footline}{family=\ttfamily,size*={6}{7.2}}
+\setbeamerfont{section title}{family=\YTwoKDisplayFont,size=\Huge}

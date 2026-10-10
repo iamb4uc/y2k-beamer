@@ -1,0 +1,109 @@
+\ProvidesPackage{beamerinnerthemeY2K}[2026/10/09 Y2K layouts and components]
+\setbeamertemplate{itemize item}{\raisebox{.12ex}{\tiny$\diamond$}}
+\setbeamertemplate{itemize subitem}{\scriptsize$\circ$}
+\setbeamertemplate{enumerate item}{\ttfamily\insertenumlabel.}
+\setbeamertemplate{section in toc}{\leavevmode\makebox[1.6em][l]{\ttfamily\inserttocsectionnumber.}\inserttocsection\par\vskip.5em}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{blocks}[default]
+\newenvironment{YTwoKDefinition}[1]{\begin{block}{DEFINITION / #1}\YTwoKSeparator}{\end{block}}
+\newenvironment{YTwoKExample}[1]{\begin{exampleblock}{EXAMPLE / #1}\YTwoKSeparator}{\end{exampleblock}}
+\newenvironment{YTwoKWarning}[1]{\begin{alertblock}{CAUTION / #1}\YTwoKSeparator}{\end{alertblock}}
+\newenvironment{YTwoKCallout}[1]{\begin{block}{#1}\YTwoKSeparator}{\end{block}}
+\def\ytwok@heroKind{1}
+\newcommand{\ytwok@hero}[3]{%
+  \ytwok@canvas{\ytwok@heroKind}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=center,text=y2kFg,text width=.76\paperwidth,align=center,
+      fill=y2kBg,inner sep=5pt] at (current page.center) {%
+      {\ttfamily\small\color{y2kMuted}#1\par}\vspace{.5cm}
+      {\hyphenpenalty=10000\exhyphenpenalty=10000
+        \YTwoKDisplayFont\fontsize{38}{41}\selectfont #2\par}\vspace{.38cm}
+      {\sffamily\normalsize\color{y2kMuted}#3\par}};
+  \end{tikzpicture}}
+\setbeamertemplate{title page}{%
+  \ytwok@hero{LECTURE SERIES / \insertdate}{\inserttitle}{\insertsubtitle}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=south west,text=y2kMuted,font=\small,fill=y2kBg,inner sep=3pt] at
+      ([xshift=.075\paperwidth,yshift=.8cm]current page.south west) {\insertauthor};
+    \node[anchor=south east,text=y2kMuted,font=\ttfamily\tiny,fill=y2kBg,inner sep=3pt] at
+      ([xshift=-.075\paperwidth,yshift=.8cm]current page.south east) {\insertinstitute};
+  \end{tikzpicture}}
+\newcommand{\YTwoKSection}[1][]{%
+  \begin{frame}[plain]\def\ytwok@heroKind{2}%
+    \ytwok@hero{CHAPTER / \thesection}{\insertsectionhead}{#1}\end{frame}}
+\newcommand{\YTwoKConclusion}[2]{%
+  \begin{frame}[plain]\begingroup
+    \def\ytwok@heroKind{3}\def\ytwok@typography{editorial}%
+    \ytwok@hero{END / BEGIN AGAIN}{#1}{#2}
+  \endgroup\end{frame}}
+% The ratio is a fraction of the available width; preserve a 4 percent gutter.
+\NewDocumentCommand{\YTwoKColumns}{O{.5} O{T} +m +m}{%
+  \pgfmathsetmacro{\ytwok@left}{.96*#1}
+  \pgfmathsetmacro{\ytwok@right}{.96*(1-#1)}
+  \ifdim#1pt>0pt\ifdim#1pt<1pt\else
+    \PackageError{Y2K}{Column ratio must be between 0 and 1}{Use .5 or .6.}\fi
+  \else\PackageError{Y2K}{Column ratio must be between 0 and 1}{Use .5 or .6.}\fi
+  \begin{columns}[#2,onlytextwidth]
+    \begin{column}{\ytwok@left\textwidth}#3\end{column}
+    \begin{column}{.02\textwidth}\mbox{}\end{column}
+    \begin{column}{\ytwok@right\textwidth}#4\end{column}
+  \end{columns}}
+\newcommand{\YTwoKComparison}[4]{\YTwoKColumns{\YTwoKHeading{#1}\YTwoKSeparator #2}{\YTwoKHeading{#3}\YTwoKSeparator #4}}
+\newcommand{\YTwoKQuestion}[2]{%
+  {\ttfamily\small\color{y2kMuted}QUESTION / #1\par}\vspace{.2cm}
+  {\YTwoKDisplayFont\LARGE #2\par}\vspace{.25cm}}
+\newenvironment{YTwoKOptions}{\begin{enumerate}[A.]}{\end{enumerate}}
+\lstdefinestyle{Y2K}{backgroundcolor={},basicstyle=\ttfamily\small\color{y2kCodeText},
+  keywordstyle=\bfseries\color{y2kKeyword},commentstyle=\color{y2kComment},
+  stringstyle=\color{y2kString},numbers=none,numberstyle=\tiny\color{y2kComment},
+  numbersep=10pt,xleftmargin=16pt,xrightmargin=6pt,frame=none,
+  aboveskip=0pt,belowskip=0pt,
+  showstringspaces=false,breaklines=true,columns=fullflexible,keepspaces=true,tabsize=2}
+\newenvironment{ytwok@codepanel}{%
+  \par\medskip\begin{beamercolorbox}[wd=\linewidth,sep=6pt]{y2k code block}%
+}{\end{beamercolorbox}\par\medskip}
+\lstnewenvironment{YTwoKCode}[1][]{\lstset{style=Y2K,#1}}{}
+\AddToHook{env/YTwoKCode/before}{\begin{ytwok@codepanel}}
+\AddToHook{env/YTwoKCode/after}{\end{ytwok@codepanel}}
+\newcommand{\YTwoKInputCode}[2][]{%
+  \begin{ytwok@codepanel}%
+    \lstinputlisting[style=Y2K,#1]{#2}%
+  \end{ytwok@codepanel}}
+\lstdefinelanguage{Y2KConfig}{morecomment=[l]{\#},morestring=[b]",morekeywords={true,false,on,off}}
+% A cover crop fills the target rectangle without distorting the source image.
+\newsavebox{\ytwok@imagebox}
+\newcommand{\YTwoKImage}[4][]{%
+  \sbox{\ytwok@imagebox}{\includegraphics[width=#3]{#2}}%
+  \ifdim\dimexpr\ht\ytwok@imagebox+\dp\ytwok@imagebox\relax<#4
+    \sbox{\ytwok@imagebox}{\includegraphics[height=#4]{#2}}\fi
+  \begin{tikzpicture}
+    \path[use as bounding box] (0,0) rectangle (#3,#4);
+    \begin{scope}\clip (0,0) rectangle (#3,#4);
+      \node[inner sep=0pt] at (.5*#3,.5*#4) {\usebox{\ytwok@imagebox}};
+    \end{scope}
+    \draw[y2kBorder,line width=.5pt] (0,0) rectangle (#3,#4);
+  \end{tikzpicture}%
+  \if\relax\detokenize{#1}\relax\else\par{\small\color{y2kMuted}#1\par}\fi}
+\newcommand{\YTwoKFullBleed}[2][]{%
+  \begin{frame}[plain]
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[inner sep=0pt] at (current page.center) {\YTwoKImage{#2}{\paperwidth}{\paperheight}};
+      \if\relax\detokenize{#1}\relax\else
+        \node[anchor=south,fill=y2kCode,text=white,text width=.85\paperwidth,
+          inner sep=8pt,align=left,font=\small] at
+          ([yshift=.5cm]current page.south) {#1};\fi
+    \end{tikzpicture}
+  \end{frame}}
+\newcommand{\YTwoKProfile}[4][2.3cm]{%
+  \begin{minipage}[t]{#1}\centering
+    \sbox{\ytwok@imagebox}{\includegraphics[width=#1]{#2}}%
+    \ifdim\dimexpr\ht\ytwok@imagebox+\dp\ytwok@imagebox\relax<#1
+      \sbox{\ytwok@imagebox}{\includegraphics[height=#1]{#2}}\fi
+    \begin{tikzpicture}
+      \path[use as bounding box] (-.5*#1,-.5*#1) rectangle (.5*#1,.5*#1);
+      \begin{scope}\clip (0,0) circle[radius=.5*#1];
+        \node[inner sep=0pt] at (0,0) {\usebox{\ytwok@imagebox}};\end{scope}
+      \draw[y2kBorder] (0,0) circle[radius=.5*#1];
+    \end{tikzpicture}\par\vspace{.18cm}
+    {\bfseries #3\par}\vspace{.08cm}{\scriptsize\color{y2kMuted}#4\par}
+  \end{minipage}}

@@ -1,0 +1,79 @@
+\ProvidesPackage{y2kgraphics}[2026/10/09 Native vector Y2K motifs]
+% Drawing primitives operate inside a TikZ picture, in its current coordinates.
+\newcommand{\YTwoKStar}[2][]{%
+  \begin{scope}[shift={#2},#1]
+    \fill (0,1) .. controls (.07,.13) and (.13,.07) .. (1,0)
+      .. controls (.13,-.07) and (.07,-.13) .. (0,-1)
+      .. controls (-.07,-.13) and (-.13,-.07) .. (-1,0)
+      .. controls (-.13,.07) and (-.07,.13) .. (0,1);
+  \end{scope}}
+\newcommand{\YTwoKOrbit}[2][]{%
+  \begin{scope}[shift={#2},#1]
+    \draw[line width=.5pt] (0,0) ellipse [x radius=1,y radius=.32];
+    \draw[line width=.35pt,rotate=24] (0,0) ellipse [x radius=1,y radius=.32];
+  \end{scope}}
+\newcommand{\YTwoKMesh}[2][]{%
+  \begin{scope}[shift={#2},#1]
+    \foreach \i in {0,...,12}{
+      \pgfmathsetmacro{\t}{\i/12}
+      \draw[line width=.3pt] (\t,0) .. controls (\t+.15,.35) and
+        (\t*.6,.7) .. (\t*.8+.2,1);
+      \draw[line width=.3pt] (0,\t) .. controls (.3,\t*.4) and
+        (.7,\t*.8+.1) .. (1,\t);}
+  \end{scope}}
+\newcommand{\YTwoKHalftone}[2][]{%
+  \begin{scope}[shift={#2},#1]
+    \foreach \x in {0,...,16}\foreach \y in {0,...,8}{
+      \pgfmathsetmacro{\r}{.008+.014*\x/16}
+      \fill (\x/16,\y/8) circle[radius=\r];}
+  \end{scope}}
+\newcommand{\YTwoKCorner}[2][]{\YTwoKMesh[#1]{#2}}
+\newcommand{\YTwoKSeparator}{\par\vspace{.3em}}
+\newcommand{\YTwoKHeading}[1]{{\YTwoKDisplayFont\Large #1\par}}
+\newcommand{\YTwoKHighlight}[1]{{\color{y2kAccent}\bfseries #1}}
+\newcommand{\ytwok@grain}{%
+  % Integer arithmetic makes the texture repeatable and leaves PGF's RNG alone.
+  \foreach \i in {1,...,300}{
+    \pgfmathsetmacro{\gx}{mod(mod(\i,211)*73,997)/997}
+    \pgfmathsetmacro{\gy}{mod(mod(\i,97)*151,991)/991}
+    \fill[y2kFg,opacity=.065] (\gx,\gy) circle[radius=.35pt];
+    \ifnum\i<65
+      \draw[y2kFg,opacity=.06,line width=.25pt]
+        (\gx,\gy)--++(.003,.006);
+    \fi}}
+\newcommand{\ytwok@canvas}[1]{%
+  \begin{tikzpicture}[remember picture,overlay,x=\paperwidth,y=\paperheight]
+    \begin{scope}[shift={(current page.south west)}]
+      \clip (0,0) rectangle (1,1);
+      \fill[y2kBg] (0,0) rectangle (1,1);
+      \ifnum\ytwok@intensity>0
+        \ifytwok@grain\ytwok@grain\fi
+        \ifnum#1>0
+          \ifnum#1=1
+            \YTwoKMesh[draw=y2kFg,opacity=.65,xscale=.32,yscale=.36,rotate=10]{(-.045,.72)}
+            \YTwoKMesh[draw=y2kFg,opacity=.65,xscale=.32,yscale=.36,rotate=190]{(1.04,.24)}
+          \else\ifnum#1=2
+            \draw[y2kBorder,line width=.5pt] (.09,.16)--(.09,.84)--(.68,.84);
+            \draw[y2kBorder,line width=.5pt] (.91,.84)--(.91,.16)--(.32,.16);
+            \YTwoKHalftone[fill=y2kMuted,opacity=.3,xscale=.15,yscale=.15]{(.78,.08)}
+            \YTwoKStar[fill=y2kFg,xscale=.016,yscale=.028]{(.19,.81)}
+          \else
+            \draw[y2kMuted,line width=.5pt] (.22,.16) rectangle (.78,.84);
+            \YTwoKStar[fill=y2kFg,xscale=.025,yscale=.044]{(.22,.84)}
+            \YTwoKStar[fill=y2kFg,xscale=.025,yscale=.044]{(.78,.16)}
+          \fi\fi
+          \YTwoKOrbit[draw=y2kMuted,xscale=.43,yscale=.85,rotate=-8]{(.5,.51)}
+          \YTwoKStar[fill=y2kFg,xscale=.036,yscale=.064]{(.9,.79)}
+          \YTwoKStar[fill=y2kFg,xscale=.018,yscale=.032]{(.85,.87)}
+          \YTwoKStar[fill=y2kFg,xscale=.025,yscale=.044]{(.09,.19)}
+          \ifnum\ytwok@intensity>1
+            \YTwoKHalftone[fill=y2kFg,opacity=.22,xscale=.13,yscale=.14]{(.02,.4)}
+          \fi
+        \else
+          % All content decoration lives in the outer 3 percent of the page.
+          \YTwoKStar[fill=y2kMuted,xscale=.011,yscale=.019]{(.965,.915)}
+          \fill[y2kBg] (.045,.085) rectangle (.94,.88);
+        \fi
+      \fi
+    \end{scope}
+  \end{tikzpicture}}

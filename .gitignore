@@ -1,0 +1,13 @@
+build/
+*.synctex.gz
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.fls
+*.fdb_latexmk
+*.vrb
+__pycache__/
+*.py[cod]
